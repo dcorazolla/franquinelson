@@ -20,7 +20,7 @@ WORKDIR /app
 
 # Copiar e instalar dependências Python
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --no-cache-dir -r requirements.txt
 
 # Criar diretório para logs do Supervisor
 RUN mkdir -p /var/log/supervisor
