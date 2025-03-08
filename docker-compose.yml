@@ -1,0 +1,8 @@
+version: "3.8"
+services:
+  assistente:
+    build: .
+    ports:
+      - "2222:22"  # Mapeia a porta 22 do container para a 2222 no host
+    volumes:
+      - .:/app     # Monta a raiz do projeto (todos os arquivos) no diretório /app do container
