@@ -1,5 +1,5 @@
-from .config import DEBUG
+from .config import CONFIG
 
 def log_debug(msg: str):
-    if DEBUG:
+    if CONFIG["debug"]:
         print(f"[DEBUG] {msg}")

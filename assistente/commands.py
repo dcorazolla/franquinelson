@@ -10,7 +10,8 @@ COMANDOS_PERMITIDOS = {
     'echo': ['echo'],
     'uname': ['uname', '-a'],
     'df': ['df', '-h'],
-    'free': ['free', '-h']
+    'free': ['free', '-h'],
+    'node': ['node', '-v']
 }
 
 def executar_comando_seguro(comando: str) -> Tuple[str, bool]:

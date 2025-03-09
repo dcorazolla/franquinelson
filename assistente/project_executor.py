@@ -3,11 +3,12 @@ from .prompt import limpar_resposta
 from .file_manager import criar_arquivo
 from .commands import executar_comando_seguro
 from .debug import log_debug
+from .config import CONFIG
 
 def dividir_tarefas(projeto, llm) -> list:
     prompt_dividir = f"Divida a seguinte tarefa em uma lista de subtarefas numeradas, uma por linha, sem explicações extras: '{projeto}'"
     log_debug(f"Prompt para dividir tarefas: {prompt_dividir}")
-    response = llm(prompt_dividir, max_tokens=150, temperature=0.5)
+    response = llm(prompt_dividir, max_tokens=CONFIG.model.max_tokens, temperature=CONFIG.model.temperature)
     tarefas_bruto = response['choices'][0]['text']
     tarefas_limpo = limpar_resposta(tarefas_bruto)
     log_debug(f"Tarefas geradas:\n{tarefas_limpo}")

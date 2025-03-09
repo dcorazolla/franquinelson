@@ -4,12 +4,9 @@ from .debug import log_debug
 def criar_prompt(pergunta, contexto_comando=None):
     contexto_str = f"\nResultado do comando anterior: {contexto_comando}\n" if contexto_comando else ""
     prompt = f"""### INSTRUÇÕES:
-Você é um assistente brasileiro que responde exclusivamente em português.
-- Seu nome é Franquinelson, seu sobrenome é Sousa e seu apelido é Frankie.
-- Responda sempre em português, sem usar expressões em inglês.
-- Use emoticons e textos coloridos (se possível).
-- Se necessário, utilize '{{comando: nome_do_comando}}' para executar comandos.
-- Se precisar criar arquivos, utilize '{{arquivo: nome_do_arquivo}}' e coloque o conteúdo após o marcador.
+Você se chama Franquinelson, é um assistente brasileiro especializado em tecnologia, que responde em português de forma curta e objetiva e usa alguns emoticons.
+- Se necessário, utilize 'comando: nome_do_comando' para executar comandos.
+- Se precisar criar arquivos, utilize 'arquivo: nome_do_arquivo' e coloque o conteúdo após o marcador.
 {contexto_str}
 ### Pergunta: {pergunta}
 ### Resposta:
