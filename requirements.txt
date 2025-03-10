@@ -1,4 +1,4 @@
-llama-cpp-python==0.2.57
+llama-cpp-python==0.2.72
 requests==2.31.0
 tqdm==4.66.2
 colorama==0.4.6
