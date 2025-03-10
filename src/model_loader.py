@@ -1,7 +1,7 @@
 import os
 import requests
 from tqdm import tqdm
-from llama_cpp import Llama
+import llama_cpp
 from config import CONFIG
 from .utils.logger import log_debug
 
@@ -47,14 +47,12 @@ class ModelLoader:
 
         log_debug("Iniciando carga do modelo...", self.debug)
 
-        with tqdm(total=1, desc="Carregando Modelo", unit="modelo") as progress_bar:
-            model = Llama(
-                model_path=self.model_path,
-                n_ctx=CONFIG["model"]["n_ctx"],
-                n_threads=CONFIG["model"]["n_threads"],
-                verbose=CONFIG["model"]["verbose"]
-            )
-            progress_bar.update(1)
+        model = llama_cpp.Llama(
+            model_path=self.model_path,
+            n_ctx=CONFIG["model"]["n_ctx"],
+            n_threads=CONFIG["model"]["n_threads"],
+            verbose=CONFIG["model"]["verbose"]
+        )
 
         log_debug("Modelo carregado com sucesso.", self.debug)
         return model

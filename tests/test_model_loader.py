@@ -26,7 +26,7 @@ class TestModelLoader(unittest.TestCase):
             mock_file = mock_file = mock_file().__enter__()
             mock_file.write.assert_called_with(b'data')
 
-    @patch("llama_cpp.Llama", autospec=True)  # Evita carregar o modelo real
+    @patch("src.model_loader.llama_cpp.Llama", autospec=True)  # Agora o mock afeta o caminho correto
     @patch("os.path.isfile", return_value=True)
     def test_should_load_model_successfully_when_model_exists(self, mock_exists, mock_llama):
         loader = ModelLoader(debug=True)
@@ -37,7 +37,7 @@ class TestModelLoader(unittest.TestCase):
 
         model_instance = loader.load_model()
 
-        # 🔥 Correção: Agora verificamos se `mock_llama()` foi chamado corretamente
+        # ✅ Agora o mock será chamado corretamente
         mock_llama.assert_called_once()
 
         self.assertEqual(model_instance, mock_model_instance)

@@ -23,10 +23,13 @@ class TestFranquinelsonAssistant(unittest.TestCase):
         mock_task_executor.assert_called_once()
         mock_state_manager.assert_called_once()
 
-    @patch("src.assistant.FranquinelsonAssistant.chat")
+    @patch("src.assistant.FranquinelsonAssistant.chat", autospec=True)  # Mocka a função chat()
     def test_should_start_chat_when_main_called(self, mock_chat):
-        main()
-        mock_chat.assert_called_once()  # Confirma que o chat iniciou corretamente
+        """Teste se o chat é chamado corretamente ao iniciar o assistente"""
+        
+        main()  # Chama a função principal
+        
+        mock_chat.assert_called_once()
 
 if __name__ == '__main__':
     unittest.main()

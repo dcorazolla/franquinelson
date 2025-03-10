@@ -1,5 +1,4 @@
 from colorama import Fore, Style, init
-from tqdm import tqdm
 from config import CONFIG
 from .model_loader import ModelLoader
 from .prompt_builder import PromptBuilder
@@ -15,7 +14,6 @@ class FranquinelsonAssistant:
         self.state_manager = StateManager(CONFIG["state"]["file"], self.debug)
         self.context = self.state_manager.load_state()
 
-        # Carregamento otimizado do modelo com barra de progresso
         self.llm = ModelLoader(debug=self.debug).load_model()
 
         self.prompt_builder = PromptBuilder(debug=self.debug)
@@ -29,7 +27,7 @@ class FranquinelsonAssistant:
         while True:
             user_input = input(Fore.CYAN + "Você: " + Style.RESET_ALL).strip()
 
-            if user_input.lower() in ['exit', 'quit']:
+            if user_input.lower() in ['exit', 'quit', 'sair', 'bye']:
                 print(Fore.YELLOW + "Até logo! 😊")
                 self.state_manager.save_state(self.context)
                 break
@@ -40,13 +38,13 @@ class FranquinelsonAssistant:
                 continue
 
             prompt = self.prompt_builder.generate_prompt(user_input, self.context)
-            
-            with tqdm(total=1, desc="Gerando resposta", unit="resposta") as bar:
-                response = self.llm(prompt, 
+
+            log_debug("Gerando resposta", self.debug)
+
+            response = self.llm(prompt, 
                                     max_tokens=CONFIG["model"]["max_tokens"],
                                     temperature=CONFIG["model"]["temperature"])
-                bar.update(1)
-
+            
             cleaned_response = self.prompt_builder.clean_response(response['choices'][0]['text'])
 
             if 'command:' in cleaned_response:
