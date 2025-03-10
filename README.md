@@ -115,9 +115,9 @@ franquinelson/
 ├── docker-compose.yml      # Configuração do Docker Compose
 ├── requirements.txt        # Dependências do projeto
 ├── config.py               # Configurações gerais do assistente
-├── main.py                 # Arquivo principal que inicia o assistente
 ├── src/
 │   ├── assistant.py        # Gerencia a interação com o usuário
+│   ├── main.py             # Arquivo principal que inicia o assistente
 │   ├── model_loader.py     # Carrega e verifica o modelo de IA
 │   ├── prompt_builder.py   # Formata as perguntas para o modelo
 │   ├── command_executor.py # Executa comandos do sistema operacional
