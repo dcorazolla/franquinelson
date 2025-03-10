@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from main import main
+from src.main import main
 
 class TestMain(unittest.TestCase):
     @patch('src.assistant.FranquinelsonAssistant.chat')

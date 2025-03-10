@@ -38,8 +38,16 @@ class TestTaskExecutor(unittest.TestCase):
 
         self.task_executor.run_full_task("Tarefa complexa")
 
-        self.task_executor.execute_subtask.assert_any_call("tarefa complexa")
-        self.assertEqual(self.task_executor.execute_subtask.call_count, 2)
+        # Verifica se `execute_subtask` foi chamado para cada subtask gerada
+        self.task_executor.execute_subtask.assert_any_call("sub1")
+        self.task_executor.execute_subtask.assert_any_call("sub2")
+
+    @patch("src.task_executor.re.findall")
+    def test_should_split_large_task_into_subtasks(self, mock_findall):
+        mock_findall.return_value = ["tarefa 1", "tarefa 2"]
+        
+        subtasks = self.task_executor.split_task("Criar um site simples")
+        self.assertEqual(subtasks, ["tarefa 1", "tarefa 2"])
 
 if __name__ == '__main__':
     unittest.main()

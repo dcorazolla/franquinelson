@@ -1,5 +1,5 @@
 from colorama import init
-from src.assistant import FranquinelsonAssistant
+from .assistant import FranquinelsonAssistant
 
 def main():
     init(autoreset=True)

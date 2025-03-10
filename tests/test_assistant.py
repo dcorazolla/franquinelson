@@ -1,4 +1,7 @@
 import unittest
+import sys
+import os
+from src.main import main
 from unittest.mock import patch, MagicMock
 from src.assistant import FranquinelsonAssistant
 
@@ -19,6 +22,11 @@ class TestFranquinelsonAssistant(unittest.TestCase):
         mock_command_executor.assert_called_once()
         mock_task_executor.assert_called_once()
         mock_state_manager.assert_called_once()
+
+    @patch("src.assistant.FranquinelsonAssistant.chat")
+    def test_should_start_chat_when_main_called(self, mock_chat):
+        main()
+        mock_chat.assert_called_once()  # Confirma que o chat iniciou corretamente
 
 if __name__ == '__main__':
     unittest.main()
