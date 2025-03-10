@@ -1,8 +1,14 @@
 version: "3.8"
+
 services:
-  assistente:
-    build: .
+  assistant:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "2222:22"  # Mapeia a porta 22 do container para a 2222 no host
+      - "2222:22"  # Porta SSH do container
     volumes:
-      - .:/app     # Monta a raiz do projeto (todos os arquivos) no diretório /app do container
+      - .:/app                # Código-fonte para desenvolvimento ágil
+      - ./models:/app/models  # Modelos persistentes
+      - ./logs:/app/logs      # Logs persistentes
+    restart: always

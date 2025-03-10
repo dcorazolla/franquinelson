@@ -9,9 +9,9 @@ CONFIG = {
     },
     "model": {
         "path": os.path.expanduser("./models/"),
-        "file": "llama-2-7b-chat.Q4_K_M.gguf",
-        "url": "https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGUF/resolve/main/llama-2-7b-chat.Q4_K_M.gguf?download=true",
-        "n_ctx": 768,
+        "file": "bode-7b-alpaca-q4_k_m.gguf",
+        "url": "https://huggingface.co/recogna-nlp/bode-7b-alpaca-pt-br-gguf/resolve/main/bode-7b-alpaca-q4_k_m.gguf?download=true",
+        "n_ctx": 1024,
         "n_threads": 4,
         "temperature": 0.3,
         "verbose": False,

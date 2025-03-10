@@ -1,8 +1,11 @@
-from assistente.assistant import chat
-from assistente.model import verify
+from colorama import init
+from src.assistant import FranquinelsonAssistant
+
+def main():
+    init(autoreset=True)
+
+    assistant = FranquinelsonAssistant()
+    assistant.chat()
 
 if __name__ == "__main__":
-    print("\nVerificando modelo")
-    if verify():
-        print("\nAssistente iniciado.")
-        chat()
+    main()
