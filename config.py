@@ -1,10 +1,10 @@
 import os
 
 CONFIG = {
-    "debug": True,
+    "debug": False,
     "name": "Franquinelson",
     "state": {
-        "enabled": True,
+        "enabled": False,
         "file": "./state.json"
     },
     "model": {

@@ -54,7 +54,7 @@ ssh root@localhost -p 2222  # Senha: docker
 
 ```bash
 cd /app
-python main.py
+python -m src.main
 ```
 
 📌 Rodando localmente (sem Docker)
@@ -68,7 +68,7 @@ pip install -r requirements.txt
 2️⃣ Inicie o assistente:
 
 ```bash
-python main.py
+python -m src.main
 ```
 
 📝 Comandos e Interações  
