@@ -1,5 +1,5 @@
 llama-cpp-python==0.2.72
-requests==2.31.0
+requests==2.32.2
 tqdm==4.66.2
 colorama==0.4.6
 pytest==8.1.1
