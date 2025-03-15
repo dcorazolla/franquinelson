@@ -1,4 +1,29 @@
-models
-__pycache__
-ia/
-.coverage
+# Ambiente virtual
+env/
+venv/
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos temporários e de cache do Python
+__pycache__/
+*.py[cod]
+*.swp
+*.swo
+*.bak
+
+# Logs e arquivos temporários
+logs/
+*.log
+debug.log
+
+# Modelos baixados
+models/
+
+# Configurações e credenciais sensíveis (se houver)
+config/settings_local.py
+
+# Dependências instaladas
+*.egg-info/
+pip-log.txt
