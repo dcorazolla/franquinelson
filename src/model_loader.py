@@ -1,58 +1,66 @@
 import os
 import requests
 from tqdm import tqdm
-import llama_cpp
-from config import CONFIG
-from .utils.logger import log_debug
-
+from config.settings import config
+from src.util.logger import Logger
+from llama_cpp import Llama
 
 class ModelLoader:
-    def __init__(self, debug=False):
-        self.model_path = f"{CONFIG['model']['path']}{CONFIG['model']['file']}"
-        self.model_url = CONFIG["model"]["url"]
-        self.n_ctx = CONFIG["model"]["n_ctx"]
-        self.n_threads = CONFIG["model"]["n_threads"]
-        self.verbose = CONFIG["model"]["verbose"]
-        self.debug = debug
+    """
+    Classe responsável pelo carregamento do modelo de IA.
+    """
 
-    def model_exists(self):
-        exists = os.path.isfile(self.model_path)
-        log_debug(f"Modelo existe: {'Sim' if exists else 'Não'}", self.debug)
-        return exists
+    def __init__(self):
+        self.logger = Logger()
+        self.model_name = config.MODEL_NAME
+        self.model_dir = config.MODEL_DIR
+        self.model_file = os.path.join(self.model_dir, config.MODEL_FILE)
+        self.model_url = config.MODEL_URL
+        self.verbose = config.VERBOSE
+
+    def _model_exists(self) -> bool:
+        """ Verifica se o modelo já foi baixado. """
+        self.logger.debug("Verificando se modelo está disponível")
+        return os.path.exists(self.model_file)
 
     def download_model(self):
-        os.makedirs(CONFIG['model']['path'], exist_ok=True)
-        response = requests.get(CONFIG['model']['url'], stream=True, timeout=300)
-        response.raise_for_status()
+        """ Faz o download do modelo com barra de progresso. """
+        if self._model_exists():
+            self.logger.debug("Modelo já existe [%s]. Pulando download.", self.model_file)
+            return
 
-        total_size = int(response.headers.get('content-length', 0))
+        self.logger.debug("Baixando modelo %s de %s...", self.model_name, self.model_url)
 
-        with open(self.model_path, 'wb') as file, tqdm(
-            desc="Baixando Modelo",
-            total=total_size,
-            unit='B',
-            unit_scale=True,
-            unit_divisor=1024
-        ) as progress_bar:
-            for chunk in response.iter_content(chunk_size=1024):
+        os.makedirs(self.model_dir, exist_ok=True)
+
+        response = requests.get(self.model_url, stream=True, timeout=60)
+        if response.status_code != 200:
+            raise RuntimeError(f"Erro ao baixar o modelo. Código HTTP: {response.status_code}")
+
+        total_size = int(response.headers.get("content-length", 0))
+
+        with open(self.model_file, "wb") as file, tqdm(
+            total=total_size, unit="B", unit_scale=True, desc="Baixando modelo", disable=not self.verbose
+        ) as progress:
+            for chunk in response.iter_content(chunk_size=8192):
                 if chunk:
                     file.write(chunk)
-                    progress_bar.update(len(chunk))
-        
-        log_debug("Modelo baixado com sucesso.", self.debug)
+                    progress.update(len(chunk))
+
+        self.logger.debug("Download concluído!")
 
     def load_model(self):
-        if not self.model_exists():
+        """ Carrega o modelo GGUF na memória, baixando se necessário. """
+        if not self._model_exists():
             self.download_model()
 
-        log_debug("Iniciando carga do modelo...", self.debug)
+        self.logger.info("Carregando modelo...")
 
-        model = llama_cpp.Llama(
-            model_path=self.model_path,
-            n_ctx=CONFIG["model"]["n_ctx"],
-            n_threads=CONFIG["model"]["n_threads"],
-            verbose=CONFIG["model"]["verbose"]
+        model = Llama(
+            model_path=self.model_file,
+            temperature=config.TEMPERATURE,
+            verbose=config.VERBOSE
         )
 
-        log_debug("Modelo carregado com sucesso.", self.debug)
+        self.logger.info("Modelo carregado com sucesso!")
         return model

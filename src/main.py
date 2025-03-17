@@ -1,8 +1,7 @@
-from colorama import init
 from .assistant import FranquinelsonAssistant
 
 def main():
-    init(autoreset=True)
+    """ Função principal que inicializa o assistente. """
 
     assistant = FranquinelsonAssistant()
     assistant.chat()

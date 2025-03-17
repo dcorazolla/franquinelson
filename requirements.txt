@@ -2,6 +2,9 @@ llama-cpp-python==0.2.72
 requests==2.32.2
 tqdm==4.66.3
 colorama==0.4.6
-pytest==8.1.1
-coverage==7.4.4
-pytest-cov==4.1.0
+torch==2.5.1
+transformers==4.39.3
+sentence-transformers==2.5.1
+accelerate==0.27.2
+langchain==0.1.14
+openai==1.12.0

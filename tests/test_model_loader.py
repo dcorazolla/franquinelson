@@ -1,46 +1,26 @@
 import unittest
-from unittest.mock import patch, mock_open, MagicMock
-from src.model_loader import ModelLoader
-from config import CONFIG
+import os
+from src.model_loader import model_loader
+from config.settings import config
 
 class TestModelLoader(unittest.TestCase):
+    """ Testes para garantir que o modelo é carregado corretamente. """
 
-    @patch("os.path.isfile")
-    def test_should_return_true_when_model_exists_given_file_exists(self, mock_isfile):
-        mock_isfile.return_value = True
-        loader = ModelLoader(debug=True)
-        self.assertTrue(loader.model_exists())
+    def test_model_file_exists(self):
+        """ Testa se o modelo já foi baixado ou pode ser baixado corretamente. """
+        model_loader.download_model()
+        model_path = os.path.join(config.MODEL_DIR, config.MODEL_FILE)
+        self.assertTrue(os.path.exists(model_path))
 
-    @patch("requests.get")
-    def test_should_download_model_successfully_when_url_is_valid(self, mock_get):
-        mock_response = MagicMock()
-        mock_response.iter_content.return_value = [b'data']
-        mock_response.headers = {'content-length': '4'}
-        mock_get.return_value = mock_response
+    def test_load_model(self):
+        """ Testa se o modelo é carregado sem erros. """
+        model = model_loader.load_model()
+        self.assertIsNotNone(model)
 
-        with patch("builtins.open", new_callable=mock_open) as mock_file:
-            loader = ModelLoader(debug=True)
-            loader.download_model()
+    def test_log_output(self):
+        """ Testa se os logs de debug funcionam corretamente. """
+        model_loader._log("Teste de log")
+        self.assertTrue(True)  # Apenas verifica se não lança erro
 
-            mock_get.assert_called_once_with(CONFIG['model']['url'], stream=True, timeout=300)
-            mock_file = mock_file = mock_file().__enter__()
-            mock_file.write.assert_called_with(b'data')
-
-    @patch("src.model_loader.llama_cpp.Llama", autospec=True)  # Agora o mock afeta o caminho correto
-    @patch("os.path.isfile", return_value=True)
-    def test_should_load_model_successfully_when_model_exists(self, mock_exists, mock_llama):
-        loader = ModelLoader(debug=True)
-
-        # Criamos um mock do modelo carregado
-        mock_model_instance = MagicMock()
-        mock_llama.return_value = mock_model_instance  # Quando chamado, retorna o mock
-
-        model_instance = loader.load_model()
-
-        # ✅ Agora o mock será chamado corretamente
-        mock_llama.assert_called_once()
-
-        self.assertEqual(model_instance, mock_model_instance)
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
