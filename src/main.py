@@ -1,17 +1,10 @@
-from src.chatbot import chatbot
+from .assistant import FranquinelsonAssistant
 
 def main():
-    """ Inicia a interação com o assistente via terminal. """
-    print("Assistente iniciado! Digite 'sair' para encerrar.")
+    """ Função principal que inicializa o assistente. """
 
-    while True:
-        user_input = input("Você: ")
-        if user_input.lower() == "sair":
-            print("Encerrando o assistente. Até mais!")
-            break
-        
-        response = chatbot.generate_response(user_input)
-        print(f"Assistente: {response}")
+    assistant = FranquinelsonAssistant()
+    assistant.chat()
 
 if __name__ == "__main__":
     main()

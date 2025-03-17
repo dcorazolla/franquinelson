@@ -9,7 +9,8 @@ class TestModelLoader(unittest.TestCase):
     def test_model_file_exists(self):
         """ Testa se o modelo já foi baixado ou pode ser baixado corretamente. """
         model_loader.download_model()
-        self.assertTrue(os.path.exists(config.MODEL_FILE))
+        model_path = os.path.join(config.MODEL_DIR, config.MODEL_FILE)
+        self.assertTrue(os.path.exists(model_path))
 
     def test_load_model(self):
         """ Testa se o modelo é carregado sem erros. """

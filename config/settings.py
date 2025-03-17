@@ -1,44 +1,64 @@
 import os
+import torch
+from logging import DEBUG,INFO
 
 class Config:
     """
-    Classe de configuração centralizada para o assistente Franquinelson.
+    Classe de configuração centralizada para o assistente.
     """
 
     # -------------------------------
-    # 🏗️ Configuração de Diretórios
+    # Configuração de Diretórios
     # -------------------------------
     BASE_DIR: str = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     MODEL_DIR: str = os.path.join(BASE_DIR, "models")
-    PERSONALITY_FILE: str = os.path.join(BASE_DIR, "config", "personality.txt")
 
     # -------------------------------
-    # 🤖 Configuração do Modelo
+    # Configuração do Modelo
     # -------------------------------
-    MODEL_NAME: str = "recogna-nlp/bode-7b-alpaca-pt-br-gguf"  # Modelo Bode em português do Brasil
-    MODEL_FILE: str = "bode-7b-alpaca-q4_k_m.gguf"  # Nome do arquivo do modelo GGUF
-    MODEL_URL: str = f"https://huggingface.co/{MODEL_NAME}/resolve/main/{MODEL_FILE}"
-    AUTO_DOWNLOAD: bool = True  # Baixar modelo automaticamente se não existir
-    DOWNLOAD_TIMEOUT: int = 600  # Tempo limite para download em segundos
+    MODEL_NAME: str = "recogna-nlp/bode-7b-alpaca-pt-br-gguf"
+    MODEL_FILE: str = "bode-7b-alpaca-q4_k_m.gguf"
+    AUTO_DOWNLOAD: bool = True
+    MODEL_URL: str = f"https://huggingface.co/recogna-nlp/bode-7b-alpaca-pt-br-gguf/resolve/main/{MODEL_FILE}"
 
     # -------------------------------
-    # ⚙️ Configuração de Execução
+    # Configuração do Comportamento
     # -------------------------------
-    USE_CPU: bool = True  # Troque para False se quiser rodar em GPU
-    DEVICE: str = "cpu" if USE_CPU else "cuda"
-    CONTEXT_SIZE: int = 2048  # Quantidade de tokens de contexto armazenados
+    TEMPERATURE: float = 0.3
+    LOG_LEVEL: int = DEBUG
+    VERBOSE: bool = False
+    PERSONALITY_FILE: str = "config/personality.txt"
 
     # -------------------------------
-    # 🎭 Configuração do Assistente
+    # Configuração de Execução
     # -------------------------------
-    ASSISTANT_NAME: str = "Franquinelson"  # Nome do assistente
-    TEMPERATURE: float = 0.3  # Controla a criatividade das respostas (0.1 = previsível, 1.0 = criativo)
+    print("Detectando device para execução do modelo.")
+    if torch.backends.mps.is_available():
+        DEVICE: str = "mps"  # Para Macs com Apple Silicon (M1/M2)
+    elif torch.cuda.is_available():
+        DEVICE: str = "cuda"  # Para GPUs NVIDIA
+    else:
+        try:
+            if torch.backends.hip.is_available():  # Apenas se a versão do torch suportar
+                DEVICE = "hip"  # Para GPUs AMD (ROCm)
+            else:
+                DEVICE = "cpu"
+        except AttributeError:
+            DEVICE = "cpu"
+    print(f"Dispositivo detectado: {DEVICE}")
+    CONTEXT_SIZE: int = 2048
+    if DEVICE == "cpu":
+        N_THREADS: int = 4
+    elif DEVICE == "cuda":
+        N_THREADS: int = torch.cuda.device_count() * 2
+    else:
+        N_THREADS: int = 2
+    MAX_TOKENS: int = 600
 
     # -------------------------------
-    # 🛠️ Configuração de Depuração
+    # Configuração do Assistente
     # -------------------------------
-    DEBUG: bool = False  # Ativar ou desativar logs detalhados
-    VERBOSE: bool = False  # Ativar ou desativar respostas detalhadas
+    ASSISTANT_NAME: str = "Franquinelson"
 
     @classmethod
     def to_dict(cls) -> dict:
