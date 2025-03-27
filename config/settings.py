@@ -24,7 +24,7 @@ class Config:
     # -------------------------------
     # Configuração do Comportamento
     # -------------------------------
-    TEMPERATURE: float = 0.3
+    TEMPERATURE: float = 0.5
     LOG_LEVEL: int = DEBUG
     VERBOSE: bool = False
     PERSONALITY_FILE: str = "config/personality.txt"
