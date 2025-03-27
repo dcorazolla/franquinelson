@@ -1,7 +1,3 @@
-# import sys
-# import os
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
-
 import logging
 import inspect
 from config.settings import config
@@ -23,18 +19,18 @@ class Logger:
             )
             self.logger.setLevel(config.LOG_LEVEL)
 
-    def info(self, message: str):
-        self.logger.info(message)
+    def debug(self, message: str, *args, **kwargs):
+        self.logger.debug(message, *args, **kwargs)
 
-    def debug(self, message: str):
-        self.logger.debug(message)
+    def info(self, message: str, *args, **kwargs):
+        self.logger.info(message, *args, **kwargs)
 
-    def warning(self, message: str):
-        self.logger.warning(message)
+    def warning(self, message: str, *args, **kwargs):
+        self.logger.warning(message, *args, **kwargs)
 
-    def error(self, message: str):
-        self.logger.error(message)
+    def error(self, message: str, *args, **kwargs):
+        self.logger.error(message, *args, **kwargs)
 
-    def critical(self, message: str):
-        self.logger.critical(message)
+    def critical(self, message: str, *args, **kwargs):
+        self.logger.critical(message, *args, **kwargs)
 

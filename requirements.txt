@@ -10,3 +10,7 @@ langchain==0.1.17
 langchain-core==0.1.52
 langchain-community==0.0.38
 openai==1.12.0
+fastapi
+uvicorn
+pytest
+pytest-cov
