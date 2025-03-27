@@ -26,21 +26,8 @@ class FranquinelsonAssistant:
                 break
 
             try:
-                prompt = self.prompt_builder.generate_prompt(user_input, self.chat_history)
-
-                self.logger.debug("Enviando prompt...")
-                response = self.model(
-                    prompt, 
-                    max_tokens=config.MAX_TOKENS, 
-                    temperature=config.TEMPERATURE
-                )
-                self.logger.debug(f"Resposta completa: {response}")
-
-                cleaned_response = self.prompt_builder.clean_response(response['choices'][0]['text'])
-
-                self.chat_history.append({"pergunta": user_input, "resposta": cleaned_response})
-
-                print(f"\n{config.ASSISTANT_NAME}: {cleaned_response}")
+                resposta = self.response(user_input)
+                print(f"\n{config.ASSISTANT_NAME}: {resposta}")
             
             except ValueError as exception:
                 print(f"\n{config.ASSISTANT_NAME}: Desculpe, tive um erro ao processar a questão.")
@@ -51,3 +38,15 @@ class FranquinelsonAssistant:
                     print(f"\n{config.ASSISTANT_NAME}: Poderia repetir?")
                 else:
                     raise exception
+                
+    def response(self, user_input: str) -> str:
+        prompt = self.prompt_builder.generate_prompt(user_input, self.chat_history)
+        self.logger.debug("Enviando prompt...")
+        response = self.model(
+            prompt, 
+            max_tokens=config.MAX_TOKENS, 
+            temperature=config.TEMPERATURE
+        )
+        cleaned_response = self.prompt_builder.clean_response(response['choices'][0]['text'])
+        self.chat_history.append({"pergunta": user_input, "resposta": cleaned_response})
+        return cleaned_response

@@ -24,8 +24,8 @@ class Config:
     # -------------------------------
     # Configuração do Comportamento
     # -------------------------------
-    TEMPERATURE: float = 0.5
-    LOG_LEVEL: int = DEBUG
+    TEMPERATURE: float = 0.4
+    LOG_LEVEL: int = INFO
     VERBOSE: bool = False
     PERSONALITY_FILE: str = "config/personality.txt"
 
@@ -46,13 +46,14 @@ class Config:
         except AttributeError:
             DEVICE = "cpu"
     print(f"Dispositivo detectado: {DEVICE}")
+
     CONTEXT_SIZE: int = 2048
     if DEVICE == "cpu":
         N_THREADS: int = 4
     elif DEVICE == "cuda":
         N_THREADS: int = torch.cuda.device_count() * 2
     else:
-        N_THREADS: int = 2
+        N_THREADS: int = 4
     MAX_TOKENS: int = 600
 
     # -------------------------------

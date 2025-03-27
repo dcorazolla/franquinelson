@@ -16,7 +16,7 @@ class PromptBuilder:
         history_json = json.dumps(history, ensure_ascii=False, indent=2)
 
         prompt_parts = [
-            f"Seu nome é {config.ASSISTANT_NAME}.",
+            f"Responda conforme personalidade a seguir. Nome: {config.ASSISTANT_NAME}; Personalidade: ",
             self.personality.replace("\n", " "),
             "Contexto da conversa em json:",
             history_json,
