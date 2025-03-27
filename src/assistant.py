@@ -25,18 +25,29 @@ class FranquinelsonAssistant:
                 print("Até logo! 😊")
                 break
 
-            prompt = self.prompt_builder.generate_prompt(user_input, self.chat_history)
+            try:
+                prompt = self.prompt_builder.generate_prompt(user_input, self.chat_history)
 
-            self.logger.debug("Enviando prompt...")
-            response = self.model(
-                prompt, 
-                max_tokens=config.MAX_TOKENS, 
-                temperature=config.TEMPERATURE
-            )
-            self.logger.debug(f"Resposta completa: {response}")
+                self.logger.debug("Enviando prompt...")
+                response = self.model(
+                    prompt, 
+                    max_tokens=config.MAX_TOKENS, 
+                    temperature=config.TEMPERATURE
+                )
+                self.logger.debug(f"Resposta completa: {response}")
 
-            cleaned_response = self.prompt_builder.clean_response(response['choices'][0]['text'])
+                cleaned_response = self.prompt_builder.clean_response(response['choices'][0]['text'])
 
-            self.chat_history.append({"pergunta": user_input, "resposta": cleaned_response})
+                self.chat_history.append({"pergunta": user_input, "resposta": cleaned_response})
 
-            print(f"\n{config.ASSISTANT_NAME}: {cleaned_response}")
+                print(f"\n{config.ASSISTANT_NAME}: {cleaned_response}")
+            
+            except ValueError as exception:
+                print(f"\n{config.ASSISTANT_NAME}: Desculpe, tive um erro ao processar a questão.")
+                
+                if "exceed context window" in str(exception):
+                    print(f"\n{config.ASSISTANT_NAME}: Limpando o histórico...")
+                    self.history = []
+                    print(f"\n{config.ASSISTANT_NAME}: Poderia repetir?")
+                else:
+                    raise exception

@@ -59,7 +59,8 @@ class ModelLoader:
         model = Llama(
             model_path=self.model_file,
             temperature=config.TEMPERATURE,
-            verbose=config.VERBOSE
+            verbose=config.VERBOSE,
+            n_ctx=config.CONTEXT_SIZE
         )
 
         self.logger.info("Modelo carregado com sucesso!")
