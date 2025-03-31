@@ -1,6 +1,6 @@
 from unittest.mock import patch, MagicMock
 import builtins
-from src.assistant import FranquinelsonAssistant
+from src.core.assistant import FranquinelsonAssistant
 import pytest
 
 @patch("src.assistant.ModelLoader")

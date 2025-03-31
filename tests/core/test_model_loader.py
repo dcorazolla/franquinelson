@@ -1,7 +1,7 @@
 import os
 import pytest
 from unittest.mock import patch, mock_open, MagicMock
-from src.model_loader import ModelLoader
+from src.core.model_loader import ModelLoader
 
 @pytest.fixture
 def loader():

@@ -1,5 +1,5 @@
 import pytest
-from src.prompt_builder import PromptBuilder
+from src.core.prompt_builder import PromptBuilder
 
 @pytest.fixture
 def builder():

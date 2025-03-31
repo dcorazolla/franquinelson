@@ -2,7 +2,7 @@ import os
 import requests
 from tqdm import tqdm
 from config.settings import config
-from src.util.logger import Logger
+from src.core.util.logger import Logger
 from llama_cpp import Llama
 
 class ModelLoader:
@@ -33,7 +33,7 @@ class ModelLoader:
 
         os.makedirs(self.model_dir, exist_ok=True)
 
-        response = requests.get(self.model_url, stream=True, timeout=60)
+        response = requests.get(self.model_url, stream=True, timeout=60, verify=False)
         if response.status_code != 200:
             raise RuntimeError(f"Erro ao baixar o modelo. Código HTTP: {response.status_code}")
 

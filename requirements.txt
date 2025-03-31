@@ -1,16 +1,27 @@
+# Core LLM e utilitários
 llama-cpp-python==0.2.72
+torch==2.2.2
+transformers==4.39.3
+sentence-transformers==2.6.1
+accelerate==0.28.0
+
+# Langchain compatível
+langchain==0.1.17
+langchain-core==0.1.53
+langchain-community==0.0.36  # Compatível com langchain==0.1.17
+
+# Utilitários de rede e UX
 requests==2.32.2
 tqdm==4.66.3
 colorama==0.4.6
-torch==2.5.1
-transformers==4.48.0
-sentence-transformers==2.5.1
-accelerate==0.27.2
-langchain==0.1.17
-langchain-core==0.1.53
-langchain-community==0.2.19
+
+# OpenAI API
 openai==1.12.0
-fastapi
-uvicorn
-pytest
-pytest-cov
+
+# API e servidor
+fastapi==0.110.0
+uvicorn==0.29.0
+
+# Testes
+pytest==8.1.1
+pytest-cov==5.0.0

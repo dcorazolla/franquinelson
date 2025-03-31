@@ -1,4 +1,4 @@
-from .assistant import FranquinelsonAssistant
+from .core.assistant import FranquinelsonAssistant
 
 def main():
     """ Função principal que inicializa o assistente. """
