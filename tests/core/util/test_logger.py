@@ -1,4 +1,4 @@
-from src.util.logger import Logger
+from src.core.util.logger import Logger
 import logging
 
 def test_logger_methods():

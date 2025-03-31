@@ -1,7 +1,7 @@
 from config.settings import config
 from .prompt_builder import PromptBuilder
-from src.util.logger import Logger
-from src.model_loader import ModelLoader
+from src.core.util.logger import Logger
+from src.core.model_loader import ModelLoader
 
 
 class FranquinelsonAssistant:
