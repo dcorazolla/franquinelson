@@ -1,7 +1,7 @@
 # Core LLM e utilitários
 llama-cpp-python==0.2.72
-torch==2.2.2
-transformers==4.39.3
+torch==2.6.0
+transformers==4.50.3
 sentence-transformers==2.6.1
 accelerate==0.28.0
 
