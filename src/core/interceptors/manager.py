@@ -2,6 +2,7 @@
 from .input_interceptor import InputInterceptor
 from .output_interceptor import OutputInterceptor
 
+
 class InterceptorManager:
     """
     Gerenciador responsável por registrar e executar interceptadores.
@@ -24,6 +25,9 @@ class InterceptorManager:
         """
         from .implementations.file_reader import FileReaderInterceptor
         self.input_interceptors.append(FileReaderInterceptor())
+        
+        from .implementations.file_writer import FileWriterInterceptor
+        self.output_interceptors.append(FileWriterInterceptor())
 
     def run_input_interceptors(self, text: str) -> str:
         """
