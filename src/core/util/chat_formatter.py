@@ -1,9 +1,24 @@
 # src/core/util/chat_formatter.py
 class ChatFormatter:
+    """
+    Classe utilitária para formatação consistente de prompts de interação com o modelo,
+    utilizando o padrão Alpaca Instruct.
+
+    Formata o prompt incluindo mensagem de sistema, histórico de conversa anterior e instrução atual.
+    """
+
     @staticmethod
     def format_instruction_prompt(system_message, history, user_input):
         """
-        Formata o prompt no estilo Alpaca Instruct, incluindo histórico e a nova pergunta.
+        Formata o prompt final que será enviado ao modelo.
+
+        Args:
+            system_message (str): Mensagem inicial que define o contexto ou personalidade.
+            history (list): Histórico da conversa com perguntas e respostas anteriores.
+            user_input (str): Instrução ou pergunta atual feita pelo usuário.
+
+        Returns:
+            str: Prompt formatado completo.
         """
         history_lines = []
         for item in history:

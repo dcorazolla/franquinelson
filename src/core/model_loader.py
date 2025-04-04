@@ -8,10 +8,16 @@ from llama_cpp import Llama
 
 class ModelLoader:
     """
-    Classe responsável pelo carregamento do modelo de IA.
+    Classe responsável pelo carregamento automático do modelo de linguagem.
+
+    Gerencia o download seguro e transparente do modelo, exibe o progresso,
+    verifica existência prévia e carrega o modelo na memória para uso.
     """
 
     def __init__(self):
+        """
+        Inicializa o ModelLoader com configurações básicas e logger.
+        """
         self.logger = Logger()
         self.model_name = config.MODEL_NAME
         self.model_dir = config.MODEL_DIR
@@ -20,12 +26,21 @@ class ModelLoader:
         self.verbose = config.VERBOSE
 
     def _model_exists(self) -> bool:
-        """ Verifica se o modelo já foi baixado. """
+        """
+        Verifica se o modelo já está presente no diretório especificado.
+
+        Returns:
+            bool: True se o arquivo do modelo existir, False caso contrário.
+        """
         self.logger.debug("Verificando se modelo está disponível")
         return os.path.exists(self.model_file)
 
     def download_model(self):
-        """ Faz o download do modelo com barra de progresso. """
+        """
+        Baixa o modelo do servidor configurado exibindo uma barra de progresso.
+
+        Não realiza download se o modelo já existir localmente.
+        """
         if self._model_exists():
             self.logger.debug("Modelo já existe [%s]. Pulando download.", self.model_file)
             return
@@ -51,7 +66,12 @@ class ModelLoader:
         self.logger.debug("Download concluído!")
 
     def load_model(self):
-        """ Carrega o modelo GGUF na memória, baixando se necessário. """
+        """
+        Carrega o modelo na memória, realizando o download caso necessário.
+
+        Returns:
+            Llama: Instância do modelo carregado pronto para execução.
+        """
         if not self._model_exists():
             self.download_model()
 

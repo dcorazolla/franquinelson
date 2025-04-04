@@ -7,8 +7,18 @@ from src.core.interceptors.manager import InterceptorManager
 
 
 class Assistant:
+    """
+    Classe principal responsável por gerenciar a interação entre o usuário e o assistente.
+
+    Controla todo o fluxo de conversação, incluindo preparação de prompts,
+    execução do modelo, interceptação de comandos e gestão do histórico.
+    """
 
     def __init__(self):
+        """
+        Inicializa componentes essenciais do assistente, como o modelo, 
+        gerenciador de interceptadores, histórico e gerador de prompts.
+        """
         self.logger = Logger()
         self.logger.debug("Iniciando assistente")
         self.prompt_builder = PromptBuilder()
@@ -18,7 +28,11 @@ class Assistant:
         self.create_actual_interation()
 
     def chat(self) -> None:
-        """Método principal de interação do assistente com o usuário"""
+        """
+        Inicia o ciclo principal de interação, permitindo conversas contínuas com o usuário.
+
+        Usuário pode sair digitando comandos específicos como 'sair', 'quit', ou 'exit'.
+        """
         print(f"{config.ASSISTANT_NAME} está online. Digite 'sair' para sair.")
 
         while True:
@@ -44,7 +58,15 @@ class Assistant:
                     raise exception
                 
     def _prepare_request(self, request: str) -> str:
-        """Prepara o input do usuário e executa os interceptors de input"""
+        """
+        Processa o input do usuário executando interceptadores e formatando o prompt.
+
+        Args:
+            request (str): Texto inserido pelo usuário.
+
+        Returns:
+            str: Prompt formatado e pronto para ser enviado ao modelo.
+        """
         request = self.interceptor_manager.run_input_interceptors(request)
         print(self.actual_interation)
         self.actual_interation["pergunta"] = request
@@ -52,6 +74,15 @@ class Assistant:
         return request
         
     def prepare_response(self, request: str) -> str:
+        """
+        Gera resposta a partir do prompt preparado, executando o modelo carregado.
+
+        Args:
+            request (str): Prompt formatado enviado ao modelo.
+
+        Returns:
+            str: Resposta do assistente processada e limpa.
+        """
         response = self.model(
             request, 
             max_tokens=config.MAX_TOKENS, 
@@ -63,12 +94,23 @@ class Assistant:
         return cleaned_response
     
     def append_history(self):
+        """
+        Adiciona a interação atual ao histórico da conversa e cria nova interação vazia.
+        """
         self.chat_history.append(self.actual_interation)
         self.create_actual_interation()
     
     def print_response(self, response: str) -> None:
-        """Imprime mensagens com o nome do assistente"""
+        """
+        Exibe a resposta do assistente na interface do usuário.
+
+        Args:
+            response (str): Texto a ser exibido ao usuário.
+        """
         print(f"\n{config.ASSISTANT_NAME}: {response}")
 
     def create_actual_interation(self):
+        """
+        Inicializa uma nova interação vazia para armazenar perguntas e respostas atuais.
+        """
         self.actual_interation = {"pergunta": "", "resposta": ""}
