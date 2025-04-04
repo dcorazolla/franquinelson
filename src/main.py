@@ -1,9 +1,10 @@
-from .core.assistant import FranquinelsonAssistant
+#src/main.py
+from .core.assistant import Assistant
 
 def main():
     """ Função principal que inicializa o assistente. """
 
-    assistant = FranquinelsonAssistant()
+    assistant = Assistant()
     assistant.chat()
 
 if __name__ == "__main__":
