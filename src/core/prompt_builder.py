@@ -1,31 +1,20 @@
-# src/core/assistant/prompt_builder.py
-
-import json
+# src/core/prompt_builder.py
 import re
 from src.core.util.logger import Logger
 from config.settings import config
 from src.core.util.chat_formatter import ChatFormatter
-from src.core.interceptors.file_reader_interceptor import FileReaderInterceptor
+
 
 class PromptBuilder:
     def __init__(self):
         self.logger = Logger()
         self.personality = self.load_personality()
-        self.interceptors = [FileReaderInterceptor()]
+        
 
     def generate_prompt(self, question, history):
         self.logger.debug(f"Gerando prompt. Pergunta: {question}")
-        question_intercepted = self.intercept_prompt(question)
-        prompt = ChatFormatter.format_instruction_prompt(
-            self.personality, history, question_intercepted
-        )
+        prompt = ChatFormatter.format_instruction_prompt(self.personality, history, question)
         self.logger.debug(f"Prompt gerado:\n**************\n {prompt}\n***************")
-        return prompt
-
-    def intercept_prompt(self, prompt):
-        self.logger.debug("Rodando interceptors de prompt")
-        for interceptor in self.interceptors:
-            prompt = interceptor.process(prompt)
         return prompt
 
     def clean_response(self, raw_response):
@@ -36,7 +25,7 @@ class PromptBuilder:
 
     def load_personality(self):
         self.logger.debug("Carregando personalidade.")
-        personality = "Você é um assistfente de IA especializado em TI, fornecendo respostas diretas e técnicas."
+        personality = "Você é um assistente de IA especializado em TI, fornecendo respostas diretas e técnicas."
         try:
             with open(config.PERSONALITY_FILE, "r", encoding="utf-8") as f:
                 personality = f.read().strip()

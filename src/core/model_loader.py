@@ -1,3 +1,4 @@
+# src/core/model_loader.py
 import os
 import requests
 from tqdm import tqdm

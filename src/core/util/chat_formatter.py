@@ -1,5 +1,4 @@
 # src/core/util/chat_formatter.py
-
 class ChatFormatter:
     @staticmethod
     def format_instruction_prompt(system_message, history, user_input):

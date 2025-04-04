@@ -1,23 +1,25 @@
+# src/core/interceptors/implementations/file_reader.py
 import os
-import platform
 import re
 from src.core.util.logger import Logger
+from ..input_interceptor import InputInterceptor
 
-class FileReaderInterceptor:
+class FileReaderInterceptor(InputInterceptor):
     READFILE_PATTERN = r"##readfile:\s*(.+?)##"
 
     def __init__(self):
         self.logger = Logger()
 
-    def process(self, prompt: str) -> str:
-        """Executa interceptor file_Reader"""
-        self.logger.debug("Executando interceptor read file...")        
-        matches = re.findall(self.READFILE_PATTERN, prompt)
+    def applies(self, text: str) -> bool:
+        return re.search(self.READFILE_PATTERN, text) is not None
+
+    def process(self, text: str) -> str:
+        matches = re.findall(self.READFILE_PATTERN, text)
         for filename in matches:
             content = self._read_file(filename.strip())
-            prepared_content = f"\n[INÍCIO DO ARQUIVO: {filename}]\n{content.strip()}\n[FIM DO ARQUIVO]\n"
-            prompt = prompt.replace(f"##readfile: {filename}##", prepared_content)
-        return prompt
+            replacement = f"\n[INÍCIO DO ARQUIVO: {filename}]\n{content.strip()}\n[FIM DO ARQUIVO]\n"
+            text = text.replace(f"##readfile: {filename}##", replacement)
+        return text
 
     def _read_file(self, filepath: str) -> str:
         if not os.path.isfile(filepath):
