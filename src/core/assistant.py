@@ -44,7 +44,7 @@ class Assistant:
 
             try:
                 request = self._prepare_request(user_input)
-                response = self.prepare_response(request)
+                response = self._prepare_response(request)
                 self.print_response(response)
             
             except ValueError as exception:
@@ -68,28 +68,44 @@ class Assistant:
             str: Prompt formatado e pronto para ser enviado ao modelo.
         """
         request = self.interceptor_manager.run_input_interceptors(request)
-        print(self.actual_interation)
         self.actual_interation["pergunta"] = request
         request = self.prompt_builder.generate_prompt(request, self.chat_history)
         return request
         
-    def prepare_response(self, request: str) -> str:
+    def _prepare_response(self, request: str, auto_depth: int = 0) -> str:
         """
-        Gera resposta a partir do prompt preparado, executando o modelo carregado.
+        Gera e processa a resposta a partir de um prompt. Caso a resposta contenha
+        um comando de autoexecução (##rerun##), o fluxo será reiniciado automaticamente.
 
         Args:
-            request (str): Prompt formatado enviado ao modelo.
+            request (str): Prompt inicial.
+            auto_depth (int): Nível atual de autoexecução (limite para evitar loop).
 
         Returns:
-            str: Resposta do assistente processada e limpa.
+            str: Resposta final (sem comandos de rerun).
         """
+        if auto_depth > 3:
+            self.logger.warning("Limite de autoexecuções alcançado. Ignorando rerun.")
+            return "[Limite de autoexecuções excedido.]"
+
         response = self.model(
-            request, 
-            max_tokens=config.MAX_TOKENS, 
+            request,
+            max_tokens=config.MAX_TOKENS,
             temperature=config.TEMPERATURE
         )
         cleaned_response = self.prompt_builder.clean_response(response['choices'][0]['text'])
-        self.actual_interation["resposta"] = cleaned_response;
+        self.actual_interation["resposta"] = cleaned_response
+
+        result = self.interceptor_manager.run_output_interceptors(cleaned_response)
+
+        # if result != cleaned_response:
+        #     self.logger.debug("Executando rerun automático.")
+        #     self.print_response(f"Executando automaticamente: {result}")
+        #     return self.prepare_response(
+        #         self._prepare_request(result),
+        #         auto_depth=auto_depth + 1
+        #     )
+
         self.append_history()
         return cleaned_response
     

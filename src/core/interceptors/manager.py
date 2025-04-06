@@ -27,7 +27,9 @@ class InterceptorManager:
         self.input_interceptors.append(FileReaderInterceptor())
         
         from .implementations.file_writer import FileWriterInterceptor
+        from .implementations.self_invoke import SelfInvokeInterceptor
         self.output_interceptors.append(FileWriterInterceptor())
+        self.output_interceptors.append(SelfInvokeInterceptor())
 
     def run_input_interceptors(self, text: str) -> str:
         """
