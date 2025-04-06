@@ -18,19 +18,25 @@ class FileReaderInterceptor(InputInterceptor):
 
     def process(self, text: str) -> str:
         matches = re.findall(self.READFILE_PATTERN, text)
-        self.logger.info(f"Comando <readfile/> encontrado: {text}") if matches else None
+        if matches:
+            self.logger.info(f"Comando <readfile/> detectado.")
         for filepath in matches:
-            self.logger.info(f"Lendo arquivo {filepath}")
-            content = self._read_file(filepath.strip())
+            filepath = filepath.strip()
+            self.logger.debug(f"Solicitada leitura do arquivo: {filepath}")
+            content = self._read_file(filepath)
             replacement = f"\n[INÍCIO DO ARQUIVO: {filepath}]\n{content.strip()}\n[FIM DO ARQUIVO]\n"
             text = text.replace(f'<readfile path="{filepath}" />', replacement)
         return text
 
     def _read_file(self, filepath: str) -> str:
         if not os.path.isfile(filepath):
+            self.logger.warning(f"Arquivo não encontrado: {filepath}")
             return f"[Erro: Arquivo '{filepath}' não encontrado.]"
         try:
             with open(filepath, "r", encoding="utf-8") as f:
-                return f.read()
+                content = f.read()
+                self.logger.info(f"Arquivo '{filepath}' lido com sucesso.")
+                return content
         except Exception as e:
+            self.logger.error(f"Erro ao ler o arquivo '{filepath}': {e}")
             return f"[Erro ao ler o arquivo '{filepath}': {str(e)}]"
