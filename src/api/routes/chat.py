@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from src.assistant import FranquinelsonAssistant
+from src.core.assistant import Assistant
 
 router = APIRouter()
 
 # instância do assistente
-assistant = FranquinelsonAssistant()
+assistant = Assistant()
 
 class ChatRequest(BaseModel):
     prompt: str
@@ -18,5 +18,5 @@ def chat(request: ChatRequest):
     if not request.prompt.strip():
         raise HTTPException(status_code=400, detail="Prompt não pode ser vazio.")
 
-    resposta = assistant.responder(request.prompt)
+    resposta = assistant.response(request.prompt)
     return ChatResponse(response=resposta)

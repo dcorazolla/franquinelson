@@ -1,23 +1,22 @@
-import pytest
 from src.core.interceptors.implementations.self_invoke import SelfInvokeInterceptor
 
-def test_self_invoke_simples():
+def test_rerun_uma_instrucao():
     interceptor = SelfInvokeInterceptor()
-    texto = "<rerun>Nova instrução simples</rerun>"
-    
-    resultado = interceptor.process(texto)
-    
-    assert resultado == "Nova instrução simples"
+    entrada = "<rerun>Nova pergunta</rerun>"
 
-def test_self_invoke_limite_rerun():
+    saida = interceptor.process(entrada)
+
+    assert saida == "Nova pergunta"
+
+def test_rerun_limite_execucoes():
     interceptor = SelfInvokeInterceptor()
-    texto = "<rerun>Executar novamente</rerun>"
-    
-    # Executar o rerun até o limite
-    for _ in range(SelfInvokeInterceptor.MAX_RERUNS):
-        resultado = interceptor.process(texto)
-        assert resultado == "Executar novamente"
+    entrada = "<rerun>Loop infinito</rerun>"
 
-    # Após atingir o limite, deve parar de executar
-    resultado_excedido = interceptor.process(texto)
-    assert resultado_excedido == ""
+    # até o limite
+    for _ in range(interceptor.MAX_RERUNS):
+        saida = interceptor.process(entrada)
+        assert saida == "Loop infinito"
+
+    # após o limite
+    saida = interceptor.process(entrada)
+    assert saida == ""

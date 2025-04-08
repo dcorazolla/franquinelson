@@ -18,12 +18,14 @@ class FileWriterInterceptor(OutputInterceptor):
 
     def process(self, text: str) -> str:
         matches = re.findall(self.WRITEFILE_PATTERN, text, re.DOTALL)
-        self.logger.info(f"Comando <writefile/> encontrado: {text}") if matches else None
+        if matches:
+            self.logger.info(f"Comando <writefile/> detectado.")
         for filename, content in matches:
+            filename = filename.strip()
             try:
                 with open(filename.strip(), "w", encoding="utf-8") as f:
                     f.write(content.strip())
-                self.logger.info(f"Arquivo '{filename}' criado.")
+                self.logger.info(f"Arquivo '{filename}' criado com sucesso.")
             except Exception as e:
                 self.logger.error(f"Erro ao escrever arquivo '{filename}': {e}")
         return re.sub(self.WRITEFILE_PATTERN, '', text, flags=re.DOTALL).strip()

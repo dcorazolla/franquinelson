@@ -15,7 +15,7 @@ def test_generate_prompt(builder):
     history = [{"pergunta": "Oi", "resposta": "Olá!"}]
     prompt = builder.generate_prompt(pergunta, history)
     assert "Python" in prompt
-    assert "Contexto da conversa" in prompt
+    assert "### Conversa:" in prompt
 
 def test_clean_response(builder):
     raw = "### Resposta\nIsso é um teste. ###"

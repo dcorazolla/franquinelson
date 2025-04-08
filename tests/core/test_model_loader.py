@@ -10,17 +10,17 @@ def loader():
 def test_model_exists_true(tmp_path):
     model_path = tmp_path / "modelo.gguf"
     model_path.write_text("fake model")
-    with patch("src.model_loader.config.MODEL_FILE", str(model_path)):
+    with patch("src.core.model_loader.config.MODEL_FILE", str(model_path)):
         assert os.path.exists(model_path)
 
 def test_model_exists_false(loader):
     with patch("os.path.exists", return_value=False):
         assert not loader._model_exists()
 
-@patch("src.model_loader.requests.get")
+@patch("src.core.model_loader.requests.get")
 @patch("builtins.open", new_callable=mock_open)
 @patch("os.makedirs")
-@patch("src.model_loader.tqdm")
+@patch("src.core.model_loader.tqdm")
 def test_download_model(mock_tqdm, mock_makedirs, mock_open_file, mock_requests):
     fake_response = MagicMock()
     fake_response.status_code = 200
@@ -32,23 +32,23 @@ def test_download_model(mock_tqdm, mock_makedirs, mock_open_file, mock_requests)
     with patch.object(loader, "_model_exists", return_value=False):
         loader.download_model()
 
-@patch("src.model_loader.Llama")
+@patch("src.core.model_loader.Llama")
 @patch.object(ModelLoader, "_model_exists", return_value=True)
 def test_load_model(mock_exists, mock_llama):
     loader = ModelLoader()
     model = loader.load_model()
     assert mock_llama.called
 
-@patch("src.model_loader.requests.get")
-@patch("src.model_loader.ModelLoader._model_exists", return_value=False)
+@patch("src.core.model_loader.requests.get")
+@patch("src.core.model_loader.ModelLoader._model_exists", return_value=False)
 def test_download_model_erro_http(mock_exists, mock_get):
     mock_get.return_value.status_code = 404
     loader = ModelLoader()
     with pytest.raises(RuntimeError):
         loader.download_model()
 
-@patch("src.model_loader.requests.get")
-@patch("src.model_loader.tqdm")
+@patch("src.core.model_loader.requests.get")
+@patch("src.core.model_loader.tqdm")
 @patch("builtins.open", new_callable=mock_open)
 @patch("os.makedirs")
 def test_download_model_sem_verbose(mock_makedirs, mock_open_file, mock_tqdm, mock_get):
@@ -63,7 +63,7 @@ def test_download_model_sem_verbose(mock_makedirs, mock_open_file, mock_tqdm, mo
     with patch.object(loader, "_model_exists", return_value=False):
         loader.download_model()
 
-@patch("src.model_loader.requests.get", side_effect=Exception("conexão falhou"))
+@patch("src.core.model_loader.requests.get", side_effect=Exception("conexão falhou"))
 @patch.object(ModelLoader, "_model_exists", return_value=False)
 def test_download_model_excecao_conexao(mock_exists, mock_get):
     loader = ModelLoader()

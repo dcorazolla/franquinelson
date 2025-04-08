@@ -1,7 +1,7 @@
 from unittest.mock import patch
 import src.main as main_mod
 
-@patch("src.main.FranquinelsonAssistant")
+@patch("src.main.Assistant")
 def test_main_chama_chat(MockAssistant):
     mock_instance = MockAssistant.return_value
     main_mod.main()
