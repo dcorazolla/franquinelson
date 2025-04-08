@@ -1,25 +1,21 @@
-import os
 import pytest
-from src.core.interceptors.file_reader_interceptor import FileReaderInterceptor
+from src.core.interceptors.implementations.file_reader import FileReaderInterceptor
 
-@pytest.fixture
-def interceptor():
-    return FileReaderInterceptor()
+def test_readfile_existente(tmp_path):
+    test_file = tmp_path / "exemplo.txt"
+    test_file.write_text("conteúdo de exemplo", encoding="utf-8")
 
-def test_readfile_success(tmp_path, interceptor):
-    file = tmp_path / "test.txt"
-    file.write_text("Conteúdo de teste.")
-    prompt = f"Leia isto: ##readfile: {file}## e comente."
-    output = interceptor.process(prompt)
-    assert "Conteúdo de teste." in output
+    entrada = f"<readfile path=\"{test_file}\" />"
+    interceptor = FileReaderInterceptor()
+    saida = interceptor.process(f"Ler: {entrada}")
 
-def test_readfile_not_found(interceptor):
-    prompt = "##readfile: inexistente.txt##"
-    output = interceptor.process(prompt)
-    assert "[Erro: Arquivo" in output
+    assert "[INÍCIO DO ARQUIVO:" in saida
+    assert "conteúdo de exemplo" in saida
+    assert "[FIM DO ARQUIVO]" in saida
 
-def test_readfile_invalid(interceptor, monkeypatch):
-    monkeypatch.setattr("builtins.open", lambda *_: (_ for _ in ()).throw(IOError("falha")))
-    prompt = "##readfile: qualquer.txt##"
-    output = interceptor.process(prompt)
-    assert "[Erro ao ler o arquivo" in output
+def test_readfile_inexistente():
+    entrada = "<readfile path=\"nao_existe.txt\" />"
+    interceptor = FileReaderInterceptor()
+    saida = interceptor.process(entrada)
+
+    assert "[Erro: Arquivo 'nao_existe.txt' não encontrado.]" in saida

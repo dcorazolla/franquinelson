@@ -130,3 +130,7 @@ class Assistant:
         Inicializa uma nova interação vazia para armazenar perguntas e respostas atuais.
         """
         self.actual_interation = {"pergunta": "", "resposta": ""}
+
+    def response(self, request: str) -> str:
+        prepared_request = self._prepare_request(request)
+        return self._prepare_response(prepared_request)
