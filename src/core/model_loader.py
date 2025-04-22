@@ -37,33 +37,46 @@ class ModelLoader:
 
     def download_model(self):
         """
-        Baixa o modelo do servidor configurado exibindo uma barra de progresso.
-
-        Não realiza download se o modelo já existir localmente.
+        Baixa o modelo com suporte a retomada e exibe progresso.
         """
         if self._model_exists():
             self.logger.debug("Modelo já existe [%s]. Pulando download.", self.model_file)
             return
 
-        self.logger.debug("Baixando modelo %s de %s...", self.model_name, self.model_url)
+        self.logger.debug("Iniciando download de %s...", self.model_url)
 
         os.makedirs(self.model_dir, exist_ok=True)
+        headers = {}
+        temp_file = self.model_file + ".part"
 
-        response = requests.get(self.model_url, stream=True, timeout=60, verify=False)
-        if response.status_code != 200:
-            raise RuntimeError(f"Erro ao baixar o modelo. Código HTTP: {response.status_code}")
+        if os.path.exists(temp_file):
+            downloaded_size = os.path.getsize(temp_file)
+            headers["Range"] = f"bytes={downloaded_size}-"
+        else:
+            downloaded_size = 0
 
-        total_size = int(response.headers.get("content-length", 0))
+        response = requests.get(self.model_url, headers=headers, stream=True, timeout=60, verify=False)
 
-        with open(self.model_file, "wb") as file, tqdm(
-            total=total_size, unit="B", unit_scale=True, desc="Baixando modelo", disable=not self.verbose
-        ) as progress:
+        if response.status_code not in [200, 206]:
+            raise RuntimeError(f"Erro ao baixar modelo: HTTP {response.status_code}")
+
+        total_size = int(response.headers.get("content-length", 0)) + downloaded_size
+
+        with open(temp_file, "ab") as f, tqdm(
+            total=total_size,
+            initial=downloaded_size,
+            unit="B",
+            unit_scale=True,
+            desc="Baixando modelo",
+            disable=False
+        ) as pbar:
             for chunk in response.iter_content(chunk_size=8192):
                 if chunk:
-                    file.write(chunk)
-                    progress.update(len(chunk))
+                    f.write(chunk)
+                    pbar.update(len(chunk))
 
-        self.logger.debug("Download concluído!")
+        os.rename(temp_file, self.model_file)
+        self.logger.info("Download do modelo concluído com sucesso.")
 
     def load_model(self):
         """

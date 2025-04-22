@@ -16,10 +16,10 @@ class Config:
     # -------------------------------
     # Configuração do Modelo
     # -------------------------------
-    MODEL_NAME: str = "recogna-nlp/bode-7b-alpaca-pt-br-gguf"
-    MODEL_FILE: str = "bode-7b-alpaca-q4_k_m.gguf"
+    MODEL_NAME: str = "TheBloke/deepseek-llm-7B-chat-GGUF"
+    MODEL_FILE: str = "deepseek-llm-7b-chat.Q4_K_M.gguf"
     AUTO_DOWNLOAD: bool = True
-    MODEL_URL: str = f"https://huggingface.co/recogna-nlp/bode-7b-alpaca-pt-br-gguf/resolve/main/{MODEL_FILE}"
+    MODEL_URL: str = f"https://huggingface.co/TheBloke/deepseek-llm-7B-chat-GGUF/resolve/main/{MODEL_FILE}"
 
     # -------------------------------
     # Configuração do Comportamento
@@ -47,7 +47,7 @@ class Config:
             DEVICE = "cpu"
     print(f"Dispositivo detectado: {DEVICE}")
 
-    CONTEXT_SIZE: int = 4096
+    CONTEXT_SIZE: int = 8192
     if DEVICE == "cpu":
         N_THREADS: int = 4
     elif DEVICE == "cuda":
@@ -60,6 +60,7 @@ class Config:
     # Configuração do Assistente
     # -------------------------------
     ASSISTANT_NAME: str = "Franquinelson"
+    ENABLE_SPEECH: bool = True
 
     @classmethod
     def to_dict(cls) -> dict:

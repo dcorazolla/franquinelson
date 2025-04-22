@@ -12,7 +12,7 @@ __pycache__/
 *.swp
 *.swo
 *.bak
-
+.pytest_cache
 
 # Logs e arquivos temporários
 logs/
